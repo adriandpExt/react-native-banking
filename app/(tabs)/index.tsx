@@ -1,70 +1,122 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import { View } from "react-native";
+import Animated from "react-native-reanimated";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import {
+  Avatar,
+  Button,
+  Card,
+  Divider,
+  Icon,
+  IconButton,
+  MD3Colors,
+  Menu,
+  useTheme,
+  Text,
+  List,
+} from "react-native-paper";
 
-export default function HomeScreen() {
+import {
+  GestureHandlerRootView,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native-gesture-handler";
+
+import { Fab, VisaCard } from "@/components/home";
+
+import React from "react";
+
+const transactions = [
+  { id: 1, name: "Purchase at Store A", amount: "-$20.00", date: "2024-11-01" },
+  { id: 2, name: "Payment Received", amount: "+$150.00", date: "2024-10-30" },
+  { id: 3, name: "Purchase at Store B", amount: "-$45.99", date: "2024-10-28" },
+  { id: 4, name: "Transfer to Bank", amount: "-$100.00", date: "2024-10-25" },
+];
+
+export default function Dashboard() {
+  const {
+    colors: { surfaceVariant, secondary, surface, onSurface, tertiary },
+    roundness,
+  } = useTheme();
+
+  const [visible, setVisible] = React.useState(false);
+
+  const openMenu = () => setVisible(true);
+
+  const closeMenu = () => setVisible(false);
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <GestureHandlerRootView>
+      <SafeAreaView style={{ height: "100%", padding: 10 }}>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <Animated.View style={{ gap: 30 }}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 10,
+              }}
+            >
+              <Avatar.Text size={40} label="XD" />
+              <View>
+                <Text variant="bodyLarge">Hi There, XD</Text>
+                <Text variant="bodyLarge">Welcome back!</Text>
+              </View>
+            </View>
+
+            <VisaCard />
+
+            <Fab />
+
+            <View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <Text variant="titleMedium" style={{ fontWeight: 700 }}>
+                  Recent Activity
+                </Text>
+
+                <Menu
+                  visible={visible}
+                  onDismiss={closeMenu}
+                  anchor={
+                    <Button onPress={openMenu} textColor={surfaceVariant}>
+                      All
+                    </Button>
+                  }
+                >
+                  <Menu.Item onPress={() => {}} title="Today" />
+                  <Divider />
+                  <Menu.Item onPress={() => {}} title="Montly" />
+                  <Divider />
+                  <Menu.Item onPress={() => {}} title="Annual" />
+                </Menu>
+              </View>
+
+              <List.Section>
+                {transactions.map((transaction) => (
+                  <List.Item
+                    style={{ margin: 0, paddingBottom: 0 }}
+                    key={transaction.id}
+                    title={transaction.name}
+                    description={`Amount: ${transaction.amount}`}
+                    left={(props) => <IconButton {...props} icon="receipt" />}
+                    right={(props) => (
+                      <Text {...props} style={{ color: "gray" }}>
+                        {transaction.date}
+                      </Text>
+                    )}
+                  />
+                ))}
+              </List.Section>
+            </View>
+          </Animated.View>
+        </ScrollView>
+      </SafeAreaView>
+    </GestureHandlerRootView>
   );
 }
-
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});
